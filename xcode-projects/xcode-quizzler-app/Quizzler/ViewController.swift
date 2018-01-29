@@ -11,9 +11,10 @@ import UIKit
 class ViewController: UIViewController {
     
     //Place your instance variables here
-    let allQuestions = QuestionBank()
-    var pickedAnswer : Bool = false
+    let allQuestions                = QuestionBank()
+    var pickedAnswer : Bool         = false
     var currentQuestion : Question? = nil
+    var currentQuestionNum : Int    = 0
     
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
@@ -23,7 +24,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        currentQuestion = allQuestions.list[0]
+        currentQuestion = allQuestions.list[currentQuestionNum]
         questionLabel.text = currentQuestion?.questionText
         
     }
@@ -37,17 +38,24 @@ class ViewController: UIViewController {
         }
         
         checkAnswer()
-  
+        nextQuestion()
+        updateUI()
     }
     
     
     func updateUI() {
-      
+        questionLabel.text = currentQuestion?.questionText
     }
     
 
     func nextQuestion() {
-        
+        currentQuestionNum += 1
+        if currentQuestionNum <= 12 {
+        currentQuestion = allQuestions.list[currentQuestionNum]
+        } else {
+            print("End of Quiz")
+            currentQuestionNum = 0
+        }
     }
     
     
@@ -57,7 +65,7 @@ class ViewController: UIViewController {
         if pickedAnswer == correctAnswer {
             print("You got it!")
         } else {
-            print("Wrong")
+            print("Wrong!")
         }
     }
     
