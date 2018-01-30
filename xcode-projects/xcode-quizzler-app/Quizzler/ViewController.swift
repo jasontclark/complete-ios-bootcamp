@@ -53,8 +53,20 @@ class ViewController: UIViewController {
         if currentQuestionNum <= 12 {
         currentQuestion = allQuestions.list[currentQuestionNum]
         } else {
-            print("End of Quiz")
-            currentQuestionNum = 0
+            // Create the alert popup.
+            let alert = UIAlertController(title: "End of Quiz.", message: "You have reached the end of the quiz. Would you like to play again?", preferredStyle: .alert)
+            
+            // Create the alert action
+
+            let restartAction = UIAlertAction(title: "Restart", style: .default, handler: { (UIAlertAction) in
+                self.startOver()
+            })
+            
+            // Add the alert action to the popup
+            alert.addAction(restartAction)
+            
+            // Show the alert on the screen.
+            present(alert, animated: true, completion: nil)
         }
     }
     
@@ -71,7 +83,9 @@ class ViewController: UIViewController {
     
     
     func startOver() {
-       
+       currentQuestionNum = 0
+       currentQuestion    = allQuestions.list[currentQuestionNum]
+       questionLabel.text = currentQuestion?.questionText
     }
     
 
