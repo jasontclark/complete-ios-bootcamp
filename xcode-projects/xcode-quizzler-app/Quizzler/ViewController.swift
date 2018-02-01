@@ -74,7 +74,6 @@ class ViewController: UIViewController {
             let alert = UIAlertController(title: "End of Quiz.", message: "You have reached the end of the quiz. Would you like to play again?", preferredStyle: .alert)
             
             // Create the alert action
-
             let restartAction = UIAlertAction(title: "Restart", style: .default, handler: { (UIAlertAction) in
                 self.startOver()
             })
@@ -93,10 +92,10 @@ class ViewController: UIViewController {
         let correctAnswer = currentQuestion?.answer
         
         if pickedAnswer == correctAnswer {
-            print("You got it!")
+            ProgressHUD.showSuccess("Correct!")
             score += 1
         } else {
-            print("Wrong!")
+            ProgressHUD.showError("Wrong!")
         }
     }
     
