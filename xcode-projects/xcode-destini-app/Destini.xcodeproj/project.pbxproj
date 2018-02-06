@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		602947FC2029AF1300DADEE0 /* Story.swift in Sources */ = {isa = PBXBuildFile; fileRef = 602947FB2029AF1300DADEE0 /* Story.swift */; };
+		602947FE2029AF2300DADEE0 /* StoryBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 602947FD2029AF2300DADEE0 /* StoryBank.swift */; };
 		EBB1C7411B9633A60011F5C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB1C7401B9633A60011F5C3 /* AppDelegate.swift */; };
 		EBB1C7431B9633A60011F5C3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB1C7421B9633A60011F5C3 /* ViewController.swift */; };
 		EBB1C7461B9633A60011F5C3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBB1C7441B9633A60011F5C3 /* Main.storyboard */; };
@@ -15,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		602947FB2029AF1300DADEE0 /* Story.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Story.swift; sourceTree = "<group>"; };
+		602947FD2029AF2300DADEE0 /* StoryBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryBank.swift; sourceTree = "<group>"; };
 		EBB1C73B1B9633A60011F5C3 /* Destini.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Destini.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBB1C73F1B9633A60011F5C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EBB1C7401B9633A60011F5C3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -35,6 +39,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		602947F82029AE6B00DADEE0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				602947FB2029AF1300DADEE0 /* Story.swift */,
+				602947FD2029AF2300DADEE0 /* StoryBank.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		602947F92029AE7800DADEE0 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				EBB1C7441B9633A60011F5C3 /* Main.storyboard */,
+				EBB1C7471B9633A60011F5C3 /* Images.xcassets */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		602947FA2029AE8500DADEE0 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				EBB1C7401B9633A60011F5C3 /* AppDelegate.swift */,
+				EBB1C7421B9633A60011F5C3 /* ViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		EBB1C7321B9633A60011F5C3 = {
 			isa = PBXGroup;
 			children = (
@@ -54,11 +85,9 @@
 		EBB1C73D1B9633A60011F5C3 /* Destini */ = {
 			isa = PBXGroup;
 			children = (
-				EBB1C7401B9633A60011F5C3 /* AppDelegate.swift */,
-				EBB1C7421B9633A60011F5C3 /* ViewController.swift */,
-				EBB1C7441B9633A60011F5C3 /* Main.storyboard */,
-				EBB1C7471B9633A60011F5C3 /* Images.xcassets */,
-				EBB1C7491B9633A60011F5C3 /* LaunchScreen.xib */,
+				602947FA2029AE8500DADEE0 /* Controller */,
+				602947F92029AE7800DADEE0 /* View */,
+				602947F82029AE6B00DADEE0 /* Model */,
 				EBB1C73E1B9633A60011F5C3 /* Supporting Files */,
 			);
 			path = Destini;
@@ -67,6 +96,7 @@
 		EBB1C73E1B9633A60011F5C3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				EBB1C7491B9633A60011F5C3 /* LaunchScreen.xib */,
 				EBB1C73F1B9633A60011F5C3 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -104,6 +134,7 @@
 				TargetAttributes = {
 					EBB1C73A1B9633A60011F5C3 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = SPR3ES5NVU;
 						LastSwiftMigration = 0900;
 					};
 				};
@@ -146,6 +177,8 @@
 			files = (
 				EBB1C7431B9633A60011F5C3 /* ViewController.swift in Sources */,
 				EBB1C7411B9633A60011F5C3 /* AppDelegate.swift in Sources */,
+				602947FC2029AF1300DADEE0 /* Story.swift in Sources */,
+				602947FE2029AF2300DADEE0 /* StoryBank.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,10 +307,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = SPR3ES5NVU;
 				INFOPLIST_FILE = Destini/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.YourName.Destini;
+				PRODUCT_BUNDLE_IDENTIFIER = com.howswift.Destini;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.0;
@@ -288,10 +322,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = SPR3ES5NVU;
 				INFOPLIST_FILE = Destini/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.YourName.Destini;
+				PRODUCT_BUNDLE_IDENTIFIER = com.howswift.Destini;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.0;
