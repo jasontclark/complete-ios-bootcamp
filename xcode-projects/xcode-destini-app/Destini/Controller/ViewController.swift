@@ -41,7 +41,7 @@ class ViewController: UIViewController {
             // Use the getNextStory() function in the Story object
             // when the answer option is A.
             nextStoryNum = currentStory.getNextStory(answerChosen: "A")
-        } else {
+        } else if sender.tag == 2 {
             // Use the getNextStory() function in the Story object
             // when the answer option is B.
             nextStoryNum = currentStory.getNextStory(answerChosen: "B")
