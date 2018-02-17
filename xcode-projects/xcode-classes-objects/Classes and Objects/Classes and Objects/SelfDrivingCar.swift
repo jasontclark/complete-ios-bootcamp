@@ -10,4 +10,17 @@ import Foundation
 
 class SelfDrivingCar : Car {
     
+    // Create destination as an optional
+    var destination : String?
+    
+    override func drive() {
+        super.drive()
+        
+        // Optional Binding to ensure
+        // that destination is set
+        if let userSetDestination = destination {
+            print("driving towards " + userSetDestination)
+        }
+        
+    }
 }
