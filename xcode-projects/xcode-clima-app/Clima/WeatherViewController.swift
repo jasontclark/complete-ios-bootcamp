@@ -19,7 +19,8 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     
 
     //TODO: Declare instance variables here
-    let locationManager = CLLocationManager()
+    let locationManager  = CLLocationManager()
+    let weatherDataModel = WeatherDataModel()
 
     //Pre-linked IBOutlets
     @IBOutlet weak var weatherIcon: UIImageView!
@@ -52,8 +53,9 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
                 print("Success! Got the weather data!")
                 
                 let weatherJSON : JSON = JSON(response.result.value!)
+                //print(weatherJSON)
                 
-                print(weatherJSON)
+                self.updateWeatherData(json: weatherJSON)
             } else {
                 // response.result.error is an optional
                 // Xcode suggests to wrap this inside String(describing: )
@@ -74,7 +76,38 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
    
     
     //Write the updateWeatherData method here:
-    
+    func updateWeatherData(json : JSON) {
+        
+        // Grab the temp from the returned JSON data
+        // Cast value to a double and assign it
+        // to the WeatherDataModel obj.
+        // We're using optional binding here to prevent
+        // from having to force unwrap the tempResult
+        // variable, which could be nil.
+        if let tempResult = json["main"]["temp"].double {
+            
+            // Temp from OpenWeatherMap is expressed in
+            // Kelvin, hence the K to F calculation
+            weatherDataModel.temperature = Int(1.8 * (tempResult - 273.15) + 32)
+            
+            // Grab the city from the returned JSON data
+            // Cast value into a string and assign it
+            // to the WeatherDataModel obj
+            weatherDataModel.city = json["name"].stringValue
+            
+            weatherDataModel.condition = json["weather"]["id"].intValue
+            
+            weatherDataModel.weatherIconName = weatherDataModel.updateWeatherIcon(condition: weatherDataModel.condition)
+            
+            updateUIWithWeatherData()
+        } else {
+            // Update the cityLabel if there was a problem
+            // getting the JSON response from OpenWeatherMap
+            cityLabel.text = "Weather Unavailable"
+        }
+        
+        
+    }
 
     
     
@@ -84,7 +117,11 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     
     
     //Write the updateUIWithWeatherData method here:
-    
+    func updateUIWithWeatherData() {
+        cityLabel.text = weatherDataModel.city
+        temperatureLabel.text = "\(weatherDataModel.temperature)"
+        weatherIcon.image = UIImage(named: weatherDataModel.weatherIconName)
+    }
     
     
     
