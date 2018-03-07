@@ -13,7 +13,7 @@ class ChatViewController: UIViewController, UITableViewDelegate,
     UITableViewDataSource, UITextFieldDelegate {
     
     // Declare instance variables here
-
+    var messageArray : [Message] = [Message]()
     
     // We've pre-linked the IBOutlets
     @IBOutlet var heightConstraint: NSLayoutConstraint!
@@ -51,6 +51,9 @@ class ChatViewController: UIViewController, UITableViewDelegate,
         // message size/length.
         configureTableView()
         
+        // Call the retrieveMessages func
+        // to look for new messages
+        retrieveMessages()
     }
 
     ///////////////////////////////////////////
@@ -67,17 +70,19 @@ class ChatViewController: UIViewController, UITableViewDelegate,
         
         // Creates a test message array. Each time this func is called,
         // this array gets created.
-        let messageArray = ["First Message", "Second Message", "Third Message"]
+        //let messageArray = ["First Message", "Second Message", "Third Message"]
         
         // The indexPath.row is used to pick out a message
         // from the messageArray.
-        cell.messageBody.text = messageArray[indexPath.row]
+        cell.messageBody.text = messageArray[indexPath.row].messageBody
+        cell.senderUsername.text = messageArray[indexPath.row].messageSender
+        cell.avatarImageView.image = UIImage(named: "egg")
         
         return cell
     }
     //TODO: Declare numberOfRowsInSection here:
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return messageArray.count
     }
     
     
@@ -167,7 +172,39 @@ class ChatViewController: UIViewController, UITableViewDelegate,
     }
     
     //TODO: Create the retrieveMessages method here:
-    
+    func retrieveMessages() {
+        
+        // Create a reference to the Messages table
+        // in the Firebase DB.
+        let messageDB = Database.database().reference().child("Messages")
+        
+        // Use the observe func to watch
+        // for new messages added to the Messsages
+        // table in the Firebase DB.
+        messageDB.observe(.childAdded) { (snapshot) in
+            // Cast the new data found in the Messages
+            // table to a Dictionary.
+            let snapshotValue = snapshot.value as! Dictionary<String, String>
+            
+            //let text = snapshotValue["MessageBody"]!
+            //let sender = snapshotValue["Sender"]!
+            //print(text, sender)
+            let message = Message()
+            
+            message.messageBody = snapshotValue["MessageBody"]!
+            message.messageSender = snapshotValue["Sender"]!
+            
+            // Add the new message to the
+            // messageArray
+            self.messageArray.append(message)
+            
+            // Resize the height of the TableView
+            self.configureTableView()
+            
+            // Reload the data in the messageTableView
+            self.messageTableView.reloadData()
+        }
+    }
     
 
     
