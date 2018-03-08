@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import ChameleonFramework
 
 class ChatViewController: UIViewController, UITableViewDelegate,
     UITableViewDataSource, UITextFieldDelegate {
@@ -54,6 +55,10 @@ class ChatViewController: UIViewController, UITableViewDelegate,
         // Call the retrieveMessages func
         // to look for new messages
         retrieveMessages()
+        
+        // Removes the separators from the
+        // messageTableView
+        messageTableView.separatorStyle = .none
     }
 
     ///////////////////////////////////////////
@@ -77,6 +82,19 @@ class ChatViewController: UIViewController, UITableViewDelegate,
         cell.messageBody.text = messageArray[indexPath.row].messageBody
         cell.senderUsername.text = messageArray[indexPath.row].messageSender
         cell.avatarImageView.image = UIImage(named: "egg")
+        
+        
+        // Using the ChameleonFramework, customize the chat messages
+        // so that you can distinguish your own messages in the chat
+        // from the messages of others.
+        if cell.senderUsername.text == Auth.auth().currentUser?.email as String! {
+            cell.avatarImageView.backgroundColor = UIColor.flatMint()
+            cell.messageBackground.backgroundColor = UIColor.flatSkyBlue()
+        } else {
+            cell.avatarImageView.backgroundColor = UIColor.flatWatermelon()
+            cell.messageBackground.backgroundColor = UIColor.flatGray()
+        }
+        
         
         return cell
     }
