@@ -37,6 +37,11 @@ class TodoListViewController: UITableViewController {
         newItem3.done  = false
         itemArray.append(newItem3)
         
+        // Retrieving Items from UserDefaults
+        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
+            itemArray = items
+        }
+        
     }
 
     //MARK - TableView Datasource Methods
@@ -96,14 +101,20 @@ class TodoListViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             
-            //self.itemArray.append(textField.text!)
+            // Create a new Item Data Model Object
             let item = Item()
+            
+            // Set the title property of the Item Object
             item.title = textField.text!
             
+            // Add the Item object to the Item Array
             self.itemArray.append(item)
             
+            // Also store the Item in UserDefaults (Local Storage)
             self.defaults.set(self.itemArray, forKey: "TodoListArray")
             
+            // Refresh the tableView to show the
+            // newly added item
             self.tableView.reloadData()
         }
         
