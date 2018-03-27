@@ -12,7 +12,7 @@ import Foundation
 // In order for a class to be Encodable
 // all of its properties must have
 // standard data types
-class Item : Encodable {
+class Item : Codable {
     var title : String = ""
     var done : Bool = false
 }
