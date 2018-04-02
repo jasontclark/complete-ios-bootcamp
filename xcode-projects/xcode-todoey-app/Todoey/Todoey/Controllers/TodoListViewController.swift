@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
     // Removing the hardcoded array
@@ -20,13 +21,19 @@ class TodoListViewController: UITableViewController {
     // used to store the Items
     let dataFilePath = FileManager.default.urls(for: .documentDirectory,
                                                 in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
+    // Now that we are using CoreData, we need
+    // to access the CoreData database. It is
+    // provided to us via the AppDelegate
+    // inside the persistentContainer
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Load all of the To-Do Items
         // from local storage.
-        loadItems()
+        // loadItems()
     }
 
     // MARK - TableView Datasource Methods
@@ -90,7 +97,12 @@ class TodoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             
             // Create a new Item Data Model Object
-            let item = Item()
+            //let item = Item()
+            
+            // Creates the new item inside
+            // the CoreData database
+            let item = Item(context: self.context)
+            
             
             // Set the title property of the Item Object
             item.title = textField.text!
@@ -117,16 +129,20 @@ class TodoListViewController: UITableViewController {
     func saveItems() {
         // Also store the ItemArray in a custom PropertyList (Local Storage)
         // using NSCoder
-        let encoder = PropertyListEncoder()
+        // let encoder = PropertyListEncoder()
         
-        // Since the encoding and the writing of the data
+        // Since the saving the data
         // could throw an error, wrap this in a
         // do-try-catch block
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            //let data = try encoder.encode(itemArray)
+            //try data.write(to: dataFilePath!)
+            
+            
+            // Saving Item data via CoreData
+            try context.save()
         } catch {
-            print("Error encoding Item Array, \(error))")
+            print("Error saving context: \(error))")
         }
         
         // Refresh the tableView to show the
@@ -134,17 +150,17 @@ class TodoListViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    func loadItems() {
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            
-            do {
-                itemArray = try decoder.decode([Item].self, from: data)
-            } catch {
-                print("Error decoding itemArray, \(error)")
-            }
-            
-        }
-    }
+//    func loadItems() {
+//        if let data = try? Data(contentsOf: dataFilePath!) {
+//            let decoder = PropertyListDecoder()
+//
+//            do {
+//                //itemArray = try decoder.decode([Item].self, from: data)
+//            } catch {
+//                //print("Error decoding itemArray, \(error)")
+//            }
+//
+//        }
+//    }
 }
 
