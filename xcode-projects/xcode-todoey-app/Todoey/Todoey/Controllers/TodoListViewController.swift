@@ -19,8 +19,8 @@ class TodoListViewController: UITableViewController {
     
     // Path to the custom Item.plist file
     // used to store the Items
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory,
-                                                in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    // let dataFilePath = FileManager.default.urls(for: .documentDirectory,
+                                                //in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     // Now that we are using CoreData, we need
     // to access the CoreData database. It is
@@ -31,9 +31,13 @@ class TodoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
         // Load all of the To-Do Items
-        // from local storage.
-        // loadItems()
+        // from the SQLite DB provided
+        // by CoreData
+        loadItems()
+        
     }
 
     // MARK - TableView Datasource Methods
@@ -106,6 +110,7 @@ class TodoListViewController: UITableViewController {
             
             // Set the title property of the Item Object
             item.title = textField.text!
+            item.done  = false
             
             // Add the Item object to the Item Array
             self.itemArray.append(item)
@@ -162,5 +167,23 @@ class TodoListViewController: UITableViewController {
 //
 //        }
 //    }
+    
+    func loadItems() {
+        
+        // Create an NSFetchRequest to request
+        // all of the To-do Items stored in the
+        // SQLite DB (Persistent Container)
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        do {
+            // Use the context to execute the request
+            // return the To-do Item objects
+            // and store them in the Item array.
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Fetch Request error: \(error)")
+        }
+        
+    }
 }
 
