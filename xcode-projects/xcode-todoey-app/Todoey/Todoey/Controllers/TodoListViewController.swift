@@ -40,7 +40,7 @@ class TodoListViewController: UITableViewController {
         
     }
 
-    // MARK - TableView Datasource Methods
+    // MARK: UITableView Datasource Methods
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Setup the Protoype Cell so that it is resusable
         // in the tableView.
@@ -65,7 +65,7 @@ class TodoListViewController: UITableViewController {
         return itemArray.count
     }
     
-    // Mark - TableView Delegate Methods
+    // MARK: TableView Delegate Methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -91,7 +91,7 @@ class TodoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    // Mark - Add New Todoey Items
+    // MARK: Add New Todoey Items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
         var textField = UITextField()
@@ -130,7 +130,7 @@ class TodoListViewController: UITableViewController {
     }
     
     
-    // Mark - Model Manipulation Methods
+    // MARK: DataModel Manipulation Methods
     func saveItems() {
         // Also store the ItemArray in a custom PropertyList (Local Storage)
         // using NSCoder
@@ -168,7 +168,11 @@ class TodoListViewController: UITableViewController {
 //        }
 //    }
     
-    func loadItems() {
+    // loadItems() method uses an outer parameter (with),
+    // and inner parameter (request), and a default argument
+    // if no arguments are provided when the method is
+    // called (Item.fetchRequest()).
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
         
         // Create an NSFetchRequest to request
         // all of the To-do Items stored in the
@@ -176,8 +180,8 @@ class TodoListViewController: UITableViewController {
         let request : NSFetchRequest<Item> = Item.fetchRequest()
         
         do {
-            // Use the context to execute the request
-            // return the To-do Item objects
+            // Use the context to execute the request,
+            // return the To-do Item objects,
             // and store them in the Item array.
             itemArray = try context.fetch(request)
         } catch {
@@ -187,3 +191,38 @@ class TodoListViewController: UITableViewController {
     }
 }
 
+// MARK: Search Bar Delegate Methods
+extension TodoListViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        // Create the Item fetch request
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        
+        // Create a filter to be used to search
+        // for Item titles that contain the search term
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        
+        // Assign the filter to the fetch Request
+        request.predicate = predicate
+        
+        // Create a sort descriptor to sort
+        // the search results
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        
+        // Assign the search descriptor to the fetch request
+        request.sortDescriptors = [sortDescriptor]
+        
+//        do {
+//            // Use the context to execute the request,
+//            // return the To-do Item objects,
+//            // and store them in the Item array.
+//            itemArray = try context.fetch(request)
+//        } catch {
+//            print("Fetch Request error: \(error)")
+//        }
+        loadItems(with: request)
+        
+        tableView.reloadData()
+    }
+}
