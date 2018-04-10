@@ -177,7 +177,7 @@ class TodoListViewController: UITableViewController {
         // Create an NSFetchRequest to request
         // all of the To-do Items stored in the
         // SQLite DB (Persistent Container)
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+       // let request : NSFetchRequest<Item> = Item.fetchRequest()
         
         do {
             // Use the context to execute the request,
@@ -188,6 +188,8 @@ class TodoListViewController: UITableViewController {
             print("Fetch Request error: \(error)")
         }
         
+        tableView.reloadData()
+        
     }
 }
 
@@ -195,6 +197,8 @@ class TodoListViewController: UITableViewController {
 extension TodoListViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        print("Search clicked!")
         
         // Create the Item fetch request
         let request: NSFetchRequest<Item> = Item.fetchRequest()
@@ -223,6 +227,15 @@ extension TodoListViewController: UISearchBarDelegate {
 //        }
         loadItems(with: request)
         
-        tableView.reloadData()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+            
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        }
     }
 }
