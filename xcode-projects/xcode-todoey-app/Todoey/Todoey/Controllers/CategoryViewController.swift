@@ -24,12 +24,12 @@ class CategoryViewController: UITableViewController {
         // Loads the Categories from
         // persistent storage
         loadCategories()
-
+        
     }
     
     // MARK: - TableView DataSource Methods
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categoryArray.count
     }
     
@@ -51,14 +51,14 @@ class CategoryViewController: UITableViewController {
     func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
         do {
             // Use the context to execute the request,
-            // return the To-do Item objects,
-            // and store them in the Item array.
+            // return the Category objects,
+            // and store them in the Category array.
             categoryArray = try context.fetch(request)
         } catch {
             print("Category Fetch Request error: \(error)")
         }
         
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
     
     
@@ -70,18 +70,47 @@ class CategoryViewController: UITableViewController {
             // Saving Item data via CoreData
             try context.save()
         } catch {
-            print("Error saving Category context: \(error))")
+            print("Error saving Category context: \(error)")
         }
         
         // Refresh the tableView to show the
         // newly added item
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
     
     // MARK: - Add New Categories
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-        print("Todoey: Add Button Pressed!")
+        
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Add New Category", message: "", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "Add", style: .default) { (action) in
+            // Creates the new item inside
+            // the CoreData database
+            let category = Category(context: self.context)
+            
+            
+            // Set the title property of the Item Object
+            category.name = textField.text!
+            
+            self.categoryArray.append(category)
+            
+            self.saveCategories()
+        }
+        
+        alert.addAction(action)
+        
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Add a new Category"
+            textField = alertTextField
+        }
+        
+        alert.addAction(action)
+        
+        present(alert, animated: true, completion: nil)
+        
     }
     
     // MARK: - TableView Delegate Methods
