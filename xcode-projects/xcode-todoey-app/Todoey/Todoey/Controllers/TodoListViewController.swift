@@ -17,6 +17,16 @@ class TodoListViewController: UITableViewController {
     // Using the Item Model instead of the hardcoded array
     var itemArray = [Item]()
     
+    // Declare the selected Category
+    // as an optional since the selected
+    // is nil until a category is selected
+    // on the CategoryVC
+    var selectedCategory : Category? {
+        didSet {
+            loadItems()
+        }
+    }
+    
     // Path to the custom Item.plist file
     // used to store the Items
     // let dataFilePath = FileManager.default.urls(for: .documentDirectory,
@@ -36,7 +46,7 @@ class TodoListViewController: UITableViewController {
         // Load all of the To-Do Items
         // from the SQLite DB provided
         // by CoreData
-        loadItems()
+        // loadItems()
         
     }
 
@@ -111,6 +121,7 @@ class TodoListViewController: UITableViewController {
             // Set the title property of the Item Object
             item.title = textField.text!
             item.done  = false
+            item.parentCategory = self.selectedCategory
             
             // Add the Item object to the Item Array
             self.itemArray.append(item)
@@ -155,29 +166,32 @@ class TodoListViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-//    func loadItems() {
-//        if let data = try? Data(contentsOf: dataFilePath!) {
-//            let decoder = PropertyListDecoder()
-//
-//            do {
-//                //itemArray = try decoder.decode([Item].self, from: data)
-//            } catch {
-//                //print("Error decoding itemArray, \(error)")
-//            }
-//
-//        }
-//    }
-    
     // loadItems() method uses an outer parameter (with),
     // and inner parameter (request), and a default argument
     // if no arguments are provided when the method is
     // called (Item.fetchRequest()).
-    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), withPredicate predicate : NSPredicate? = nil) {
         
         // Create an NSFetchRequest to request
         // all of the To-do Items stored in the
         // SQLite DB (Persistent Container)
-       // let request : NSFetchRequest<Item> = Item.fetchRequest()
+        // let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        
+        // let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
+        
+        // request.predicate = compoundPredicate
+        
+        if let additionalPredicate = predicate {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
+        } else {
+            request.predicate = categoryPredicate
+        }
+        
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        
+        request.sortDescriptors = [sortDescriptor]
         
         do {
             // Use the context to execute the request,
@@ -208,14 +222,14 @@ extension TodoListViewController: UISearchBarDelegate {
         let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         
         // Assign the filter to the fetch Request
-        request.predicate = predicate
+        //request.predicate = predicate
         
         // Create a sort descriptor to sort
         // the search results
-        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        //let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
         
         // Assign the search descriptor to the fetch request
-        request.sortDescriptors = [sortDescriptor]
+        //request.sortDescriptors = [sortDescriptor]
         
 //        do {
 //            // Use the context to execute the request,
@@ -225,7 +239,7 @@ extension TodoListViewController: UISearchBarDelegate {
 //        } catch {
 //            print("Fetch Request error: \(error)")
 //        }
-        loadItems(with: request)
+        loadItems(with: request, withPredicate: predicate)
         
     }
     
