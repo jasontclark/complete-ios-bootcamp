@@ -18,6 +18,7 @@ class CategoryViewController: UITableViewController {
     // Stores a reference to the category
     // data from Realm
     var categories: Results<Category>!
+    //var categories = [Category]()
     
     // Get a reference to the CoreData context
     //let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -27,7 +28,7 @@ class CategoryViewController: UITableViewController {
         
         // Loads the Categories from
         // persistent storage
-        //loadCategories()
+        loadCategories()
         
     }
     
@@ -37,7 +38,8 @@ class CategoryViewController: UITableViewController {
         //return categoryArray.count
         
         // Nil Coalescing Operator
-        return categories?.count ?? 1
+        //return categories?.count ?? 1
+        return categories.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -56,7 +58,7 @@ class CategoryViewController: UITableViewController {
         
     // MARK: - Data Manipulation Methods
     
-//    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
+    func loadCategories() {
 //        do {
 //            // Use the context to execute the request,
 //            // return the Category objects,
@@ -66,10 +68,10 @@ class CategoryViewController: UITableViewController {
 //            print("Category Fetch Request error: \(error)")
 //        }
         
- //       categories = realm.objects(Category.self)
+        categories = realm.objects(Category.self)
         
- //       tableView.reloadData()
- //   }
+        tableView.reloadData()
+    }
     
     
     func save(category: Category) {
@@ -110,7 +112,7 @@ class CategoryViewController: UITableViewController {
             newCategory.name = textField.text!
             
             //self.categoryArray.append(category)
-            self.categories.append(newCategory)
+            //self.categories.append(newCategory)
             
             self.save(category: newCategory)
         }
