@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class TodoListViewController: UITableViewController {
     // Removing the hardcoded array
@@ -15,7 +15,10 @@ class TodoListViewController: UITableViewController {
     
     
     // Using the Item Model instead of the hardcoded array
-    var itemArray = [Item]()
+    // var itemArray = [Item]()
+    var todoItems: Results<Item>?
+    
+    let realm = try! Realm()
     
     // Declare the selected Category
     // as an optional since the selected
@@ -23,25 +26,20 @@ class TodoListViewController: UITableViewController {
     // on the CategoryVC
     var selectedCategory : Category? {
         didSet {
-            //loadItems()
+            loadItems()
         }
     }
-    
-    // Path to the custom Item.plist file
-    // used to store the Items
-    // let dataFilePath = FileManager.default.urls(for: .documentDirectory,
-                                                //in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     // Now that we are using CoreData, we need
     // to access the CoreData database. It is
     // provided to us via the AppDelegate
     // inside the persistentContainer
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    // let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         // Load all of the To-Do Items
         // from the SQLite DB provided
@@ -57,22 +55,25 @@ class TodoListViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
         // Grab an Item from the itemArray
-        let item = itemArray[indexPath.row]
-        
-        // Set the textLabel in the cell
-        // to the title of the Item
-        cell.textLabel?.text = item.title
-        
-        // Add a checkmark if the Item is
-        // marked as done
-        cell.accessoryType = item.done ? .checkmark : .none
+        //let item = itemArray[indexPath.row]
+        if let item = todoItems?[indexPath.row] {
+            // Set the textLabel in the cell
+            // to the title of the Item
+            cell.textLabel?.text = item.title
+            
+            // Add a checkmark if the Item is
+            // marked as done
+            cell.accessoryType = item.done ? .checkmark : .none
+        } else {
+            cell.textLabel?.text = "No Items Added."
+        }
         
         return cell
         
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemArray.count
+        return todoItems?.count ?? 1
     }
     
     // MARK: TableView Delegate Methods
@@ -81,9 +82,9 @@ class TodoListViewController: UITableViewController {
         
         // If the row is selected, toggle the done
         // property of the item
-        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        //todoItems[indexPath.row].done = !todoItems[indexPath.row].done
         
-        self.saveItems()
+        //self.saveItems()
         
         // Toggle the checkmark
         if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
@@ -102,43 +103,53 @@ class TodoListViewController: UITableViewController {
     }
     
     // MARK: Add New Todoey Items
-//    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-//
-//        var textField = UITextField()
-//
-//        let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
-//
-//        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
-//
-//            // Create a new Item Data Model Object
-//            //let item = Item()
-//
-//            // Creates the new item inside
-//            // the CoreData database
-//            let item = Item(context: self.context)
-//
-//
-//            // Set the title property of the Item Object
-//            item.title = textField.text!
-//            item.done  = false
-//            item.parentCategory = self.selectedCategory
-//
-//            // Add the Item object to the Item Array
-//            self.itemArray.append(item)
-//
-//            self.saveItems()
-//        }
-//
-//        alert.addTextField { (alertTextField) in
-//            alertTextField.placeholder = "Create new item"
-//            textField = alertTextField
-//        }
-//
-//        alert.addAction(action)
-//
-//        present(alert, animated: true, completion: nil)
-//
-//    }
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+
+        var textField = UITextField()
+
+        let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
+
+        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+
+            if let currentCategory = self.selectedCategory {
+                
+                do {
+                    try self.realm.write {
+                        // Create a new to-do item
+                        // via Realm
+                        let newItem = Item()
+                        
+                        // Set the title and done
+                        // properties of the Item Object
+                        newItem.title = textField.text!
+                        
+                        // In Realm, we need to add
+                        // the new item to the list
+                        // of Items available in the selected
+                        // category, instead of setting the
+                        // parent category for the new item.
+                        currentCategory.items.append(newItem)
+                    }
+                } catch {
+                    print("Error saving new items: \(error)")
+                }
+                
+            }
+            
+            self.tableView.reloadData()
+            
+        }
+
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField
+        }
+
+        alert.addAction(action)
+
+        present(alert, animated: true, completion: nil)
+
+    }
     
     
     // MARK: DataModel Manipulation Methods
@@ -150,16 +161,16 @@ class TodoListViewController: UITableViewController {
         // Since the saving the data
         // could throw an error, wrap this in a
         // do-try-catch block
-        do {
+        // do {
             //let data = try encoder.encode(itemArray)
             //try data.write(to: dataFilePath!)
             
             
             // Saving Item data via CoreData
-            try context.save()
-        } catch {
-            print("Error saving context: \(error))")
-        }
+            //try context.save()
+        // } catch {
+        //    print("Error saving context: \(error))")
+        // }
         
         // Refresh the tableView to show the
         // newly added item
@@ -170,41 +181,16 @@ class TodoListViewController: UITableViewController {
     // and inner parameter (request), and a default argument
     // if no arguments are provided when the method is
     // called (Item.fetchRequest()).
-//    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), withPredicate predicate : NSPredicate? = nil) {
-//
-//        // Create an NSFetchRequest to request
-//        // all of the To-do Items stored in the
-//        // SQLite DB (Persistent Container)
-//        // let request : NSFetchRequest<Item> = Item.fetchRequest()
-//
-//        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
-//
-//        // let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
-//
-//        // request.predicate = compoundPredicate
-//
-//        if let additionalPredicate = predicate {
-//            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
-//        } else {
-//            request.predicate = categoryPredicate
-//        }
-//
-//        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-//
-//        request.sortDescriptors = [sortDescriptor]
-//
-//        do {
-//            // Use the context to execute the request,
-//            // return the To-do Item objects,
-//            // and store them in the Item array.
-//            itemArray = try context.fetch(request)
-//        } catch {
-//            print("Fetch Request error: \(error)")
-//        }
-//
-//        tableView.reloadData()
-//
-//    }
+    func loadItems() {
+
+        // Using Realm, fetch all of
+        // the items associated with
+        // the selected category
+        todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+
+        tableView.reloadData()
+
+    }
 }
 
 // MARK: Search Bar Delegate Methods

@@ -17,11 +17,7 @@ class CategoryViewController: UITableViewController {
     
     // Stores a reference to the category
     // data from Realm
-    var categories: Results<Category>!
-    //var categories = [Category]()
-    
-    // Get a reference to the CoreData context
-    //let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var categories: Results<Category>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +34,8 @@ class CategoryViewController: UITableViewController {
         //return categoryArray.count
         
         // Nil Coalescing Operator
-        //return categories?.count ?? 1
-        return categories.count
+        return categories?.count ?? 1
+        //return categories.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -47,11 +43,12 @@ class CategoryViewController: UITableViewController {
         
         // Grab an Category from the categoryArray
         //let category = categoryArray[indexPath.row]
-        let category = categories[indexPath.row]
+        //let category = categories[indexPath.row]
         
+        // Grab an Category from the categories results,
         // Set the textLabel in the cell
         // to the name of the Category
-        cell.textLabel?.text = category.name
+        cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories Created"
         
         return cell
     }
@@ -59,15 +56,7 @@ class CategoryViewController: UITableViewController {
     // MARK: - Data Manipulation Methods
     
     func loadCategories() {
-//        do {
-//            // Use the context to execute the request,
-//            // return the Category objects,
-//            // and store them in the Category array.
-//            categoryArray = try context.fetch(request)
-//        } catch {
-//            print("Category Fetch Request error: \(error)")
-//        }
-        
+
         categories = realm.objects(Category.self)
         
         tableView.reloadData()
@@ -140,7 +129,7 @@ class CategoryViewController: UITableViewController {
         let destinationVC = segue.destination as! TodoListViewController
         
         if let indexPath = tableView.indexPathForSelectedRow {
-            destinationVC.selectedCategory = categories[indexPath.row]
+            destinationVC.selectedCategory = categories?[indexPath.row]
         }
     }
 }
