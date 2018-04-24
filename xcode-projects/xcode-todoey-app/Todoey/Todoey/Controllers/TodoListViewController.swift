@@ -82,9 +82,19 @@ class TodoListViewController: UITableViewController {
         
         // If the row is selected, toggle the done
         // property of the item
-        //todoItems[indexPath.row].done = !todoItems[indexPath.row].done
+        if let item = todoItems?[indexPath.row] {
+            do  {
+                try realm.write {
+                    
+                    //realm.delete(item)
+                    item.done = !item.done
+                }
+            } catch {
+                print("Error saving done status: \(error)")
+            }
+        }
         
-        //self.saveItems()
+        tableView.reloadData()
         
         // Toggle the checkmark
         if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
@@ -122,6 +132,9 @@ class TodoListViewController: UITableViewController {
                         // Set the title and done
                         // properties of the Item Object
                         newItem.title = textField.text!
+                        
+                        // Store the date it was created
+                        newItem.dateCreated = Date()
                         
                         // In Realm, we need to add
                         // the new item to the list
@@ -194,48 +207,52 @@ class TodoListViewController: UITableViewController {
 }
 
 // MARK: Search Bar Delegate Methods
-//extension TodoListViewController: UISearchBarDelegate {
-//
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//
-//        print("Search clicked!")
-//
-//        // Create the Item fetch request
-//        let request: NSFetchRequest<Item> = Item.fetchRequest()
-//
-//        // Create a filter to be used to search
-//        // for Item titles that contain the search term
-//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-//
-//        // Assign the filter to the fetch Request
-//        //request.predicate = predicate
-//
-//        // Create a sort descriptor to sort
-//        // the search results
-//        //let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-//
-//        // Assign the search descriptor to the fetch request
-//        //request.sortDescriptors = [sortDescriptor]
-//
-////        do {
-////            // Use the context to execute the request,
-////            // return the To-do Item objects,
-////            // and store them in the Item array.
-////            itemArray = try context.fetch(request)
-////        } catch {
-////            print("Fetch Request error: \(error)")
-////        }
-//        loadItems(with: request, withPredicate: predicate)
-//
-//    }
-//
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        if searchBar.text?.count == 0 {
-//            loadItems()
-//
-//            DispatchQueue.main.async {
-//                searchBar.resignFirstResponder()
-//            }
+extension TodoListViewController: UISearchBarDelegate {
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+
+        print("Search clicked!")
+
+        // Create the Item fetch request
+        //let request: NSFetchRequest<Item> = Item.fetchRequest()
+
+        // Create a filter to be used to search
+        // for Item titles that contain the search term
+        //let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+
+        // Assign the filter to the fetch Request
+        //request.predicate = predicate
+
+        // Create a sort descriptor to sort
+        // the search results
+        //let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+
+        // Assign the search descriptor to the fetch request
+        //request.sortDescriptors = [sortDescriptor]
+
+//        do {
+//            // Use the context to execute the request,
+//            // return the To-do Item objects,
+//            // and store them in the Item array.
+//            itemArray = try context.fetch(request)
+//        } catch {
+//            print("Fetch Request error: \(error)")
 //        }
-//    }
-//}
+//        loadItems(with: request, withPredicate: predicate)
+        
+        //todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "title", ascending: true)
+        
+        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        }
+    }
+}

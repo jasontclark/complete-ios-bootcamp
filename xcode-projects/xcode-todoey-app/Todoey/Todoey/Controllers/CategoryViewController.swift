@@ -41,10 +41,6 @@ class CategoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
         
-        // Grab an Category from the categoryArray
-        //let category = categoryArray[indexPath.row]
-        //let category = categories[indexPath.row]
-        
         // Grab an Category from the categories results,
         // Set the textLabel in the cell
         // to the name of the Category
@@ -99,6 +95,8 @@ class CategoryViewController: UITableViewController {
             
             // Set the title property of the Category Object
             newCategory.name = textField.text!
+            
+            newCategory.dateCreated = Date()
             
             //self.categoryArray.append(category)
             //self.categories.append(newCategory)
