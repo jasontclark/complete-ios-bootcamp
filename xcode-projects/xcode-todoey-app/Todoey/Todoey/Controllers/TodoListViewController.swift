@@ -213,37 +213,9 @@ extension TodoListViewController: UISearchBarDelegate {
 
         print("Search clicked!")
 
-        // Create the Item fetch request
-        //let request: NSFetchRequest<Item> = Item.fetchRequest()
-
-        // Create a filter to be used to search
-        // for Item titles that contain the search term
-        //let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-
-        // Assign the filter to the fetch Request
-        //request.predicate = predicate
-
-        // Create a sort descriptor to sort
-        // the search results
-        //let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-
-        // Assign the search descriptor to the fetch request
-        //request.sortDescriptors = [sortDescriptor]
-
-//        do {
-//            // Use the context to execute the request,
-//            // return the To-do Item objects,
-//            // and store them in the Item array.
-//            itemArray = try context.fetch(request)
-//        } catch {
-//            print("Fetch Request error: \(error)")
-//        }
-//        loadItems(with: request, withPredicate: predicate)
-        
-        //todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "title", ascending: true)
-        
         todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
-
+        
+        tableView.reloadData()
     }
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
