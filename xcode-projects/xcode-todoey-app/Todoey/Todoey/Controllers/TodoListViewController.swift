@@ -167,27 +167,10 @@ class TodoListViewController: UITableViewController {
     
     // MARK: DataModel Manipulation Methods
     func saveItems() {
-        // Also store the ItemArray in a custom PropertyList (Local Storage)
-        // using NSCoder
-        // let encoder = PropertyListEncoder()
-        
-        // Since the saving the data
-        // could throw an error, wrap this in a
-        // do-try-catch block
-        // do {
-            //let data = try encoder.encode(itemArray)
-            //try data.write(to: dataFilePath!)
-            
-            
-            // Saving Item data via CoreData
-            //try context.save()
-        // } catch {
-        //    print("Error saving context: \(error))")
-        // }
-        
+               
         // Refresh the tableView to show the
         // newly added item
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
     
     // loadItems() method uses an outer parameter (with),
