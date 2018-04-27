@@ -88,6 +88,25 @@ class CategoryViewController: UITableViewController {
         tableView.reloadData()
     }
     
+    
+    func delete(category: Category) {
+        // Since the saving the data
+        // could throw an error, wrap this in a
+        // do-try-catch block
+        do {
+            // Saving Item data via CoreData
+            //try context.save()
+            try realm.write {
+                realm.delete(category)
+            }
+        } catch {
+            print("Error deleting Category: \(error)")
+        }
+        
+        // Refresh the tableView to show the
+        // newly added item
+        tableView.reloadData()
+    }
     // MARK: - Add New Categories
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -107,9 +126,6 @@ class CategoryViewController: UITableViewController {
             newCategory.name = textField.text!
             
             newCategory.dateCreated = Date()
-            
-            //self.categoryArray.append(category)
-            //self.categories.append(newCategory)
             
             self.save(category: newCategory)
         }
@@ -151,7 +167,9 @@ extension CategoryViewController: SwipeTableViewCellDelegate {
         
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
             // handle action by updating model with deletion
-            print("Delete Button Pressed!")
+            if let category = self.categories?[indexPath.row] {
+                self.delete(category: category)
+            }
         }
         
         // customize the action appearance
