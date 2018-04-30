@@ -105,7 +105,7 @@ class CategoryViewController: UITableViewController {
         
         // Refresh the tableView to show the
         // newly added item
-        tableView.reloadData()
+        // tableView.reloadData()
     }
     // MARK: - Add New Categories
     
@@ -176,6 +176,13 @@ extension CategoryViewController: SwipeTableViewCellDelegate {
         deleteAction.image = UIImage(named: "delete")
         
         return [deleteAction]
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeTableOptions {
+        var options = SwipeTableOptions()
+        options.expansionStyle = .destructive
+        options.transitionStyle = .border
+        return options
     }
 
 }
