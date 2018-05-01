@@ -8,8 +8,9 @@
 
 import UIKit
 import RealmSwift
+//import SwipeCellKit
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     // Removing the hardcoded array
     // var itemArray = ["Find Mike", "Buy Eggos", "Destroy Demogorgon"]
     
@@ -38,6 +39,8 @@ class TodoListViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.rowHeight = 80.0
 
         //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
@@ -52,7 +55,8 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Setup the Protoype Cell so that it is resusable
         // in the tableView.
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        //let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         // Grab an Item from the itemArray
         //let item = itemArray[indexPath.row]
@@ -186,6 +190,31 @@ class TodoListViewController: UITableViewController {
 
         tableView.reloadData()
 
+    }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let item = self.todoItems?[indexPath.row] {
+            self.delete(item: item)
+        }
+    }
+    
+    func delete(item: Item) {
+        // Since the saving the data
+        // could throw an error, wrap this in a
+        // do-try-catch block
+        do {
+            // Saving Item data via CoreData
+            //try context.save()
+            try realm.write {
+                realm.delete(item)
+            }
+        } catch {
+            print("Error deleting Item: \(error)")
+        }
+        
+        // Refresh the tableView to show the
+        // newly added item
+        // tableView.reloadData()
     }
 }
 
