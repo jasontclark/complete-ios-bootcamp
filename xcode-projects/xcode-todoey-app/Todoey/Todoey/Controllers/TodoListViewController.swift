@@ -197,7 +197,7 @@ extension TodoListViewController: UISearchBarDelegate {
         print("Search clicked!")
 
         todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
-        
+
         tableView.reloadData()
     }
 

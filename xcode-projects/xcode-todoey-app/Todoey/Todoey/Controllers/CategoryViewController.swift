@@ -10,7 +10,7 @@ import UIKit
 import RealmSwift
 import SwipeCellKit
 
-class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController {
     
     // Reference our Realm DB
     let realm = try! Realm()
@@ -33,28 +33,22 @@ class CategoryViewController: UITableViewController {
     // MARK: - TableView DataSource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //return categoryArray.count
         
         // Nil Coalescing Operator
         return categories?.count ?? 1
-        //return categories.count
+
     }
     
-//    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! SwipeTableViewCell
-//        cell.delegate = self
-//        return cell
-//    }
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
+        
+        // Calling the SwipeTableVC super class
+        // to get access to the cell
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         // Grab an Category from the categories results,
         // Set the textLabel in the cell
         // to the name of the Category
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories Created"
-        
-        cell.delegate = self
         
         return cell
     }
@@ -86,6 +80,13 @@ class CategoryViewController: UITableViewController {
         // Refresh the tableView to show the
         // newly added item
         tableView.reloadData()
+    }
+    
+    // MARK: Delete from Swipe
+    override func updateModel(at indexPath: IndexPath) {
+        if let category = self.categories?[indexPath.row] {
+            self.delete(category: category)
+        }
     }
     
     
@@ -160,29 +161,29 @@ class CategoryViewController: UITableViewController {
 
 
 // MARK: - SwipeCell Delegate Methods
-extension CategoryViewController: SwipeTableViewCellDelegate {
-    
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
-        guard orientation == .right else { return nil }
-        
-        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            // handle action by updating model with deletion
-            if let category = self.categories?[indexPath.row] {
-                self.delete(category: category)
-            }
-        }
-        
-        // customize the action appearance
-        deleteAction.image = UIImage(named: "delete")
-        
-        return [deleteAction]
-    }
-    
-    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeTableOptions {
-        var options = SwipeTableOptions()
-        options.expansionStyle = .destructive
-        options.transitionStyle = .border
-        return options
-    }
-
-}
+//extension CategoryViewController: SwipeTableViewCellDelegate {
+//
+//    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+//        guard orientation == .right else { return nil }
+//
+//        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+//            // handle action by updating model with deletion
+//            if let category = self.categories?[indexPath.row] {
+//                self.delete(category: category)
+//            }
+//        }
+//
+//        // customize the action appearance
+//        deleteAction.image = UIImage(named: "delete")
+//
+//        return [deleteAction]
+//    }
+//
+//    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeTableOptions {
+//        var options = SwipeTableOptions()
+//        options.expansionStyle = .destructive
+//        options.transitionStyle = .border
+//        return options
+//    }
+//
+//}
