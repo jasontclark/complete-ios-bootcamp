@@ -8,7 +8,7 @@
 
 import UIKit
 import RealmSwift
-//import SwipeCellKit
+import ChameleonFramework
 
 class TodoListViewController: SwipeTableViewController {
     // Removing the hardcoded array
@@ -25,29 +25,20 @@ class TodoListViewController: SwipeTableViewController {
     // as an optional since the selected
     // is nil until a category is selected
     // on the CategoryVC
-    var selectedCategory : Category? {
+    var selectedCategory: Category? {
         didSet {
             loadItems()
         }
     }
     
-    // Now that we are using CoreData, we need
-    // to access the CoreData database. It is
-    // provided to us via the AppDelegate
-    // inside the persistentContainer
-    // let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var categoryColor: UIColor?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.rowHeight = 80.0
 
-        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        
-        // Load all of the To-Do Items
-        // from the SQLite DB provided
-        // by CoreData
-        // loadItems()
+        tableView.separatorStyle = .none
         
     }
 
@@ -64,6 +55,16 @@ class TodoListViewController: SwipeTableViewController {
             // Set the textLabel in the cell
             // to the title of the Item
             cell.textLabel?.text = item.title
+            
+            
+            // Set the color of the cell
+            // based on the color used by
+            // the Category (gradient effect)
+            if let color = self.categoryColor?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+                cell.backgroundColor = color
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+            }
+            
             
             // Add a checkmark if the Item is
             // marked as done

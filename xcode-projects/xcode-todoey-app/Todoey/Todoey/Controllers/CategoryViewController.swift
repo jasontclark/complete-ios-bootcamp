@@ -20,6 +20,7 @@ class CategoryViewController: SwipeTableViewController {
     // Stores a reference to the category
     // data from Realm
     var categories: Results<Category>?
+    var categoryColor: UIColor?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,7 +56,8 @@ class CategoryViewController: SwipeTableViewController {
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories Created"
         
         if let hexColor = categories?[indexPath.row].hexColor {
-            cell.backgroundColor = UIColor(hexString: hexColor)
+            categoryColor = UIColor(hexString: hexColor)
+            cell.backgroundColor = categoryColor
         }
         
         return cell
@@ -166,5 +168,10 @@ class CategoryViewController: SwipeTableViewController {
         if let indexPath = tableView.indexPathForSelectedRow {
             destinationVC.selectedCategory = categories?[indexPath.row]
         }
+        
+        if let color = categoryColor {
+            destinationVC.categoryColor = color
+        }
+
     }
 }
