@@ -168,10 +168,5 @@ class CategoryViewController: SwipeTableViewController {
         if let indexPath = tableView.indexPathForSelectedRow {
             destinationVC.selectedCategory = categories?[indexPath.row]
         }
-        
-        if let color = categoryColor {
-            destinationVC.categoryColor = color
-        }
-
     }
 }
