@@ -45,28 +45,34 @@ class TodoListViewController: SwipeTableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         
-        if let hexValue = selectedCategory?.hexColor {
-            
-            // Since we are using optional binding
-            // it is safe to force unwrap selectedCategory
-            // here to get the name
-            title = selectedCategory!.name
-            
-            // Ensures that we have a reference to the
-            // navigation bar
-            guard let navBar = navigationController?.navigationBar else {fatalError("Navigation Controller does not exist.")}
-            
-            // This optional binding statement ensures
-            // that the hexValue we received is actually
-            // a known good hex value to create a UIColor
-            // object
-            if let navBarColor = UIColor(hexString: hexValue) {
-                navBar.barTintColor = navBarColor
-                navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
-                navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: ContrastColorOf(navBarColor, returnFlat: true)]
-                searchBar.barTintColor = navBarColor
-            }
-        }
+        guard let hexValue = selectedCategory?.hexColor else { fatalError() }
+        
+        title = selectedCategory?.name
+        
+        updateNavBar(withHexCode: hexValue)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        //guard let originalColor = UIColor(hexString: "1D9B46") else { fatalError() }
+        
+        updateNavBar(withHexCode: "1D9BF6")
+    }
+    
+    // MARK: Nav Bar Setup Methods
+    func updateNavBar(withHexCode hexCodeValue: String) {
+        // Ensures that we have a reference to the
+        // navigation bar
+        guard let navBar = navigationController?.navigationBar else { fatalError("Navigation Controller does not exist.") }
+        
+        // This optional binding statement ensures
+        // that the hexValue we received is actually
+        // a known good hex value to create a UIColor
+        // object
+        guard let navBarColor = UIColor(hexString: hexCodeValue) else { fatalError() }
+        navBar.barTintColor = navBarColor
+        navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+        navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: ContrastColorOf(navBarColor, returnFlat: true)]
+        searchBar.barTintColor = navBarColor
     }
 
     // MARK: UITableView Datasource Methods
