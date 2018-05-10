@@ -8,8 +8,13 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
+    
+    
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     // Removing the hardcoded array
     // var itemArray = ["Find Mike", "Buy Eggos", "Destroy Demogorgon"]
     
@@ -24,35 +29,58 @@ class TodoListViewController: UITableViewController {
     // as an optional since the selected
     // is nil until a category is selected
     // on the CategoryVC
-    var selectedCategory : Category? {
+    var selectedCategory: Category? {
         didSet {
             loadItems()
         }
     }
     
-    // Now that we are using CoreData, we need
-    // to access the CoreData database. It is
-    // provided to us via the AppDelegate
-    // inside the persistentContainer
-    // let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.rowHeight = 80.0
 
-        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        tableView.separatorStyle = .none
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         
-        // Load all of the To-Do Items
-        // from the SQLite DB provided
-        // by CoreData
-        // loadItems()
+        guard let hexValue = selectedCategory?.hexColor else { fatalError() }
         
+        title = selectedCategory?.name
+        
+        updateNavBar(withHexCode: hexValue)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        //guard let originalColor = UIColor(hexString: "1D9B46") else { fatalError() }
+        
+        updateNavBar(withHexCode: "1D9BF6")
+    }
+    
+    // MARK: Nav Bar Setup Methods
+    func updateNavBar(withHexCode hexCodeValue: String) {
+        // Ensures that we have a reference to the
+        // navigation bar
+        guard let navBar = navigationController?.navigationBar else { fatalError("Navigation Controller does not exist.") }
+        
+        // This optional binding statement ensures
+        // that the hexValue we received is actually
+        // a known good hex value to create a UIColor
+        // object
+        guard let navBarColor = UIColor(hexString: hexCodeValue) else { fatalError() }
+        navBar.barTintColor = navBarColor
+        navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+        navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: ContrastColorOf(navBarColor, returnFlat: true)]
+        searchBar.barTintColor = navBarColor
     }
 
     // MARK: UITableView Datasource Methods
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Setup the Protoype Cell so that it is resusable
         // in the tableView.
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        //let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         // Grab an Item from the itemArray
         //let item = itemArray[indexPath.row]
@@ -60,6 +88,16 @@ class TodoListViewController: UITableViewController {
             // Set the textLabel in the cell
             // to the title of the Item
             cell.textLabel?.text = item.title
+            
+            
+            // Set the color of the cell
+            // based on the color used by
+            // the Category (gradient effect)
+            if let color = UIColor(hexString: selectedCategory!.hexColor)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+                cell.backgroundColor = color
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+            }
+            
             
             // Add a checkmark if the Item is
             // marked as done
@@ -167,27 +205,10 @@ class TodoListViewController: UITableViewController {
     
     // MARK: DataModel Manipulation Methods
     func saveItems() {
-        // Also store the ItemArray in a custom PropertyList (Local Storage)
-        // using NSCoder
-        // let encoder = PropertyListEncoder()
-        
-        // Since the saving the data
-        // could throw an error, wrap this in a
-        // do-try-catch block
-        // do {
-            //let data = try encoder.encode(itemArray)
-            //try data.write(to: dataFilePath!)
-            
-            
-            // Saving Item data via CoreData
-            //try context.save()
-        // } catch {
-        //    print("Error saving context: \(error))")
-        // }
-        
+               
         // Refresh the tableView to show the
         // newly added item
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
     
     // loadItems() method uses an outer parameter (with),
@@ -204,6 +225,31 @@ class TodoListViewController: UITableViewController {
         tableView.reloadData()
 
     }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let item = self.todoItems?[indexPath.row] {
+            self.delete(item: item)
+        }
+    }
+    
+    func delete(item: Item) {
+        // Since the saving the data
+        // could throw an error, wrap this in a
+        // do-try-catch block
+        do {
+            // Saving Item data via CoreData
+            //try context.save()
+            try realm.write {
+                realm.delete(item)
+            }
+        } catch {
+            print("Error deleting Item: \(error)")
+        }
+        
+        // Refresh the tableView to show the
+        // newly added item
+        // tableView.reloadData()
+    }
 }
 
 // MARK: Search Bar Delegate Methods
@@ -214,7 +260,7 @@ extension TodoListViewController: UISearchBarDelegate {
         print("Search clicked!")
 
         todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
-        
+
         tableView.reloadData()
     }
 
