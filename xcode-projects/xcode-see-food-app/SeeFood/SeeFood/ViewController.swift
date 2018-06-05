@@ -31,10 +31,48 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         // Using optional binding to downcast the
         // dictionary value to a UIImage
         if let userPickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-          imageView.image = userPickedImage
+            imageView.image = userPickedImage
+            
+            guard let ciimage = CIImage(image: userPickedImage) else {
+                fatalError("Could not convert UIImage to CIImage!")
+            }
+            
+            detect(image: ciimage)
         }
         
         imagePicker.dismiss(animated: true, completion: nil)
+        
+    }
+    
+    func detect(image: CIImage) {
+        
+        // Load the Inceptionv3 CoreML model which will be used
+        // for the image detection
+        guard let model = try? VNCoreMLModel(for: Inceptionv3().model) else {
+            fatalError("Loading Inceptionv3 CoreML Model failed!")
+        }
+        
+        // Create the Vision request. A callback function is defined
+        // for the completion handler
+        let request = VNCoreMLRequest(model: model) { (request, error) in
+            guard let results = request.results as? [VNClassificationObservation] else {
+                fatalError("Model failed to process image.")
+            }
+            
+            print(results)
+        }
+        
+        // Create a ImageRequestHandler object to specify
+        // which image you want to run the Vision request on
+        let handler = VNImageRequestHandler(ciImage: image)
+        
+        // Perform the request against the handler
+        // i.e the selected image
+        do {
+            try handler.perform([request])
+        } catch {
+            print(error)
+        }
         
     }
 
