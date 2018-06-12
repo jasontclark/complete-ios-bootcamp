@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		60B1013020CFC87A00E2D437 /* FlowerClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 60B1012F20CFC87A00E2D437 /* FlowerClassifier.mlmodel */; };
 		60B1D0A720CE7FA6002FE271 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60B1D0A620CE7FA6002FE271 /* AppDelegate.swift */; };
 		60B1D0A920CE7FA6002FE271 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60B1D0A820CE7FA6002FE271 /* ViewController.swift */; };
 		60B1D0AC20CE7FA6002FE271 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60B1D0AA20CE7FA6002FE271 /* Main.storyboard */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		60B1012F20CFC87A00E2D437 /* FlowerClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FlowerClassifier.mlmodel; sourceTree = "<group>"; };
 		60B1D0A320CE7FA6002FE271 /* WhatFlower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatFlower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60B1D0A620CE7FA6002FE271 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		60B1D0A820CE7FA6002FE271 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -54,6 +56,7 @@
 		60B1D0A520CE7FA6002FE271 /* WhatFlower */ = {
 			isa = PBXGroup;
 			children = (
+				60B1012F20CFC87A00E2D437 /* FlowerClassifier.mlmodel */,
 				60B1D0A620CE7FA6002FE271 /* AppDelegate.swift */,
 				60B1D0A820CE7FA6002FE271 /* ViewController.swift */,
 				60B1D0AA20CE7FA6002FE271 /* Main.storyboard */,
@@ -135,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60B1013020CFC87A00E2D437 /* FlowerClassifier.mlmodel in Sources */,
 				60B1D0A920CE7FA6002FE271 /* ViewController.swift in Sources */,
 				60B1D0A720CE7FA6002FE271 /* AppDelegate.swift in Sources */,
 			);
