@@ -15,6 +15,7 @@ import Alamofire
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     @IBOutlet var imageView: UIImageView!
+    @IBOutlet weak var flowerLabel: UILabel!
     
     let imagePicker  = UIImagePickerController()
     let wikipediaURL = "https://en.wikipedia.org/w/api.php"
@@ -67,7 +68,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             
             if let firstResult = results.first {
                 self.navigationItem.title = firstResult.identifier.capitalized
-                self.getWikipediaInfo(from: firstResult.identifier.capitalized)
+                self.requestWikiInfo(from: firstResult.identifier)
             }
             
         }
@@ -83,7 +84,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }
     
-    func getWikipediaInfo(from flowerName: String) {
+    func requestWikiInfo(from flowerName: String) {
         let queryParams: [String:String] = [
             "format": "json",
             "action": "query",
@@ -97,14 +98,24 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         Alamofire.request(wikipediaURL, parameters: queryParams).responseJSON { (response) in
             if response.result.isSuccess {
-                print("SUCCESS: We have Wikipedia data!")
+                //print("SUCCESS: We have Wikipedia data!")
+                //print(response)
                 
-//                guard let responseJSON: JSON = JSON(response.result.value) else { print("FATAL ERROR: JSON response invalid!")}
-//                
-//                print(responseJSON)
+                let flowerJSON: JSON = JSON(response.result.value!)
+                let pageid = flowerJSON["query"]["pageids"][0].stringValue
+                
+                self.getFlowerInfo(from: flowerJSON, with: pageid)
             }
         }
         
+    }
+    
+    func getFlowerInfo(from json: JSON, with pageid: String) {
+        //print("Page ID is: \(pageid)")
+        //print(json)
+        
+        let flowerInfo = json["query"]["pages"][pageid]["extract"].stringValue
+        flowerLabel.text = flowerInfo
     }
     
 }
