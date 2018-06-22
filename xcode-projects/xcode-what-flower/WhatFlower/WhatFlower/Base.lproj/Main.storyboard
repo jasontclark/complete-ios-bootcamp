@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,11 +20,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="EdL-qs-AIm">
-                                <rect key="frame" x="0.0" y="59" width="375" height="559.5"/>
+                                <rect key="frame" x="0.0" y="59" width="375" height="299"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="EdL-qs-AIm" secondAttribute="height" multiplier="375:299" id="DQO-WU-yWe"/>
+                                </constraints>
                                 <viewLayoutGuide key="safeArea" id="7nb-j5-zTE"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yx5-1i-TcA">
-                                <rect key="frame" x="16" y="626.5" width="343" height="20.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="yx5-1i-TcA">
+                                <rect key="frame" x="16" y="366" width="343" height="281"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -31,13 +35,13 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="yx5-1i-TcA" secondAttribute="bottom" constant="20" id="65F-Gx-8hM"/>
-                            <constraint firstItem="EdL-qs-AIm" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="59" id="9ov-gu-ptY"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yx5-1i-TcA" secondAttribute="trailing" constant="16" id="Clo-1L-fg6"/>
-                            <constraint firstItem="yx5-1i-TcA" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Q1b-6q-YEO"/>
-                            <constraint firstItem="EdL-qs-AIm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="YgI-DT-RQy"/>
-                            <constraint firstItem="yx5-1i-TcA" firstAttribute="top" secondItem="EdL-qs-AIm" secondAttribute="bottom" constant="8" id="nYf-5I-8Ww"/>
-                            <constraint firstItem="EdL-qs-AIm" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="t6x-bz-Scy"/>
+                            <constraint firstItem="yx5-1i-TcA" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="1nh-MC-G3w"/>
+                            <constraint firstItem="EdL-qs-AIm" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="59" id="6Dk-vi-dYy"/>
+                            <constraint firstItem="EdL-qs-AIm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="LYX-CS-SIn"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yx5-1i-TcA" secondAttribute="trailing" constant="16" id="WJs-mM-bMW"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="yx5-1i-TcA" secondAttribute="bottom" constant="20" id="Z3J-sF-HvE"/>
+                            <constraint firstItem="EdL-qs-AIm" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="kOe-Zp-Wd0"/>
+                            <constraint firstItem="yx5-1i-TcA" firstAttribute="top" secondItem="EdL-qs-AIm" secondAttribute="bottom" constant="8" id="ywJ-PF-kD4"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
